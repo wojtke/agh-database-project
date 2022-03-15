@@ -2,9 +2,9 @@
 Projekt z przedmiotu BazyDanych
 
 # Grupa:
-Wojciech Jasiński
-Andrzej Starzyk
-Mikołaj Klimek
+  - Wojciech Jasiński
+  - Andrzej Starzyk
+  - Mikołaj Klimek
 
 # Temat projektu:
 Stworzenie aplikacji webowej z newsami z kilku kategorii
@@ -20,6 +20,6 @@ Stworzenie aplikacji webowej z newsami z kilku kategorii
 
 
 # Technologie:
-mongoDB
-php
-html, css, js, bootstrap
+  - mongoDB
+  - php
+  - html, css, js, bootstrap
