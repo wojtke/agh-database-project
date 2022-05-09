@@ -11,7 +11,7 @@ app.config.from_prefixed_env()
 pymongo = PyMongo(app)
 
 recipes: Collection = pymongo.db.recipes
-
+articles: Collection = pymongo.db.articles
 
 from .routes import cocktails
 from .models import cocktails, objectid

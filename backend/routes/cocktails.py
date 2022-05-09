@@ -2,10 +2,10 @@ from datetime import datetime
 from pymongo.collection import ReturnDocument
 import flask
 from flask import request, url_for
-from ..models.cocktails import Cocktail
+from ..models.cocktails import Article, Cocktail
 from ..models.objectid import PydanticObjectId
 
-from .. import app, recipes
+from .. import app, recipes, articles
 
 
 @app.route("/cocktails/")
@@ -94,3 +94,41 @@ def delete_cocktail(slug):
         return Cocktail(**deleted_cocktail).to_json()
     else:
         flask.abort(404, "Cocktail not found")
+
+
+
+@app.route("/articles/")
+def list_articles():
+    page = int(request.args.get("page", 1))
+    per_page = 10  # A const value.
+
+    # For pagination, it's necessary to sort by name,
+    # then skip the number of docs that earlier pages would have displayed,
+    # and then to limit to the fixed page size, ``per_page``.
+    cursor = articles.find().sort("name").skip(per_page * (page - 1)).limit(per_page)
+
+    article_count = articles.count_documents({})
+
+    links = {
+        "self": {"href": url_for(".list_articles", page=page, _external=True)},
+        "last": {
+            "href": url_for(
+                ".list_articles", page=(article_count // per_page) + 1, _external=True
+            )
+        },
+    }
+    # Add a 'prev' link if it's not on the first page:
+    if page > 1:
+        links["prev"] = {
+            "href": url_for(".list_articles", page=page - 1, _external=True)
+        }
+    # Add a 'next' link if it's not on the last page:
+    if page - 1 < article_count // per_page:
+        links["next"] = {
+            "href": url_for(".list_articles", page=page + 1, _external=True)
+        }
+
+    return {
+        "recipes": [Article(**doc).to_json() for doc in cursor],
+        "_links": links,
+    }

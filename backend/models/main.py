@@ -1,4 +1,4 @@
-from multiprocessing.dummy import Array
+"""from multiprocessing.dummy import Array
 from urllib import request
 from flask import Flask, jsonify, make_response
 from flask_mongoengine import MongoEngine
@@ -11,6 +11,7 @@ app.config["MONGODB_HOST"] = DB_URL
 
 db = MongoEngine()
 db.init_app()
+
 
 class Article(db.Document):
     id: db.StringField()
@@ -160,3 +161,4 @@ if __name__ == '__main__':
     app.run(debug = True)
 
 
+"""
