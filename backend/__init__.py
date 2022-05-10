@@ -17,5 +17,4 @@ users: Collection = pymongo.db.users
 comments: Collection = pymongo.db.comments
 
 
-from .routes import cocktails
-from .models import cocktails, objectid
+from .routes import cocktails, articles, users, comments

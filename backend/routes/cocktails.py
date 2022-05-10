@@ -2,10 +2,10 @@ from datetime import datetime
 from pymongo.collection import ReturnDocument
 import flask
 from flask import request, url_for
-from ..models.cocktails import Article, Cocktail, User, Comment
+from ..models.cocktail import Cocktail
 from ..models.objectid import PydanticObjectId
 
-from .. import app, recipes, articles, users, comments
+from .. import app, recipes
 
 
 @app.route("/cocktails/")
@@ -94,132 +94,3 @@ def delete_cocktail(slug):
         return Cocktail(**deleted_cocktail).to_json()
     else:
         flask.abort(404, "Cocktail not found")
-
-
-
-@app.route("/articles/")
-def list_articles():
-    page = int(request.args.get("page", 1))
-    per_page = 10  # A const value.
-
-    cursor = articles.find().sort("name").skip(per_page * (page - 1)).limit(per_page)
-
-    article_count = articles.count_documents({})
-
-    links = {
-        "self": {"href": url_for(".list_articles", page=page, _external=True)},
-        "last": {
-            "href": url_for(
-                ".list_articles", page=(article_count // per_page) + 1, _external=True
-            )
-        },
-    }
-    if page > 1:
-        links["prev"] = {
-            "href": url_for(".list_articles", page=page - 1, _external=True)
-        }
-    if page - 1 < article_count // per_page:
-        links["next"] = {
-            "href": url_for(".list_articles", page=page + 1, _external=True)
-        }
-
-    return {
-        "articles": [Article(**doc).to_json() for doc in cursor],
-        "_links": links,
-    }
-
-
-@app.route("/articles/<int:given_id>", methods=["GET"])
-def get_article(given_id):
-    this_article = articles.find_one_or_404({"article_id": given_id})
-    return Article(**this_article).to_json()
-
-
-@app.route("/articles/<int:given_id>", methods=["DELETE"])
-def delete_article(given_id):
-    deleted_article = articles.find_one_and_delete(
-        {"article_id": given_id},
-    )
-    if deleted_article:
-        return Article(**deleted_article).to_json()
-    else:
-        flask.abort(404, "Article not found")
-
-
-@app.route("/articles/category/<string:given_category>", methods=["GET"])
-def find_articles_with_category(given_category):
-    cursor = articles.find({"category" : given_category})
-    return {"articles": [Article(**doc).to_json() for doc in cursor]}
-
-
-@app.route("/articles/tag/<string:given_tag>", methods=["GET"])
-def find_articles_with_tag(given_tag):
-    cursor = articles.find({"tags" : {"$all" : [given_tag]}})
-    return {"articles": [Article(**doc).to_json() for doc in cursor]}
-
-
-@app.route("/users/")
-def list_users():
-    page = int(request.args.get("page", 1))
-    per_page = 10  # A const value.
-
-    cursor = users.find().sort("name").skip(per_page * (page - 1)).limit(per_page)
-
-    users_count = users.count_documents({})
-
-    links = {
-        "self": {"href": url_for(".list_users", page=page, _external=True)},
-        "last": {
-            "href": url_for(
-                ".list_users", page=(users_count // per_page) + 1, _external=True
-            )
-        },
-    }
-    if page > 1:
-        links["prev"] = {
-            "href": url_for(".list_users", page=page - 1, _external=True)
-        }
-    if page - 1 < users_count // per_page:
-        links["next"] = {
-            "href": url_for(".list_users", page=page + 1, _external=True)
-        }
-
-    return {
-        "users": [User(**doc).to_json() for doc in cursor],
-        "_links": links,
-    }
-
-    
-@app.route("/users/<int:given_id>", methods=["GET"])
-def get_user(given_id):
-    this_user = users.find_one_or_404({"user_id": given_id})
-    return User(**this_user).to_json()
-
-
-@app.route("/users/<int:given_id>", methods=["DELETE"])
-def delete_user(given_id):
-    deleted_user = users.find_one_and_delete(
-        {"user_id": given_id},
-    )
-    if deleted_user:
-        return User(**deleted_user).to_json()
-    else:
-        flask.abort(404, "Article not found")
-
-
-@app.route("/comments/article/<int:article_id>", methods=["GET"])
-def find_comments_to_article(article_id):
-    cursor = comments.find({"article_id" : article_id})
-    return {"comments": [Comment(**doc).to_json() for doc in cursor]}
-
-
-@app.route("/comment/<int:given_id>", methods=["DELETE"])
-def delete_comment(given_id):
-    deleted_comment = comments.find_one_and_delete(
-        {"comment_id": given_id},
-    )
-    if deleted_comment:
-        return Comment(**deleted_comment).to_json()
-    else:
-        flask.abort(404, "Comment not found")
-
