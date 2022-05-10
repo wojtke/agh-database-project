@@ -12,6 +12,9 @@ CORS(app)
 
 pymongo = PyMongo(app)
 recipes: Collection = pymongo.db.recipes
+articles: Collection = pymongo.db.articles
+users: Collection = pymongo.db.users
+comments: Collection = pymongo.db.comments
 
 
 from .routes import cocktails
