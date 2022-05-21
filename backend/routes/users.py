@@ -1,3 +1,7 @@
+from curses.ascii import US
+from re import U
+
+from matplotlib.style import use
 import flask
 from flask import request, url_for
 from ..models.user import User
@@ -52,3 +56,31 @@ def delete_user(given_id):
         return User(**deleted_user).to_json()
     else:
         flask.abort(404, "Article not found")
+
+
+@app.route("/users/<int:given_id>", methods=["PUT"])
+def update_user(given_id):
+    user = User(**request.get_json())
+    users.find_one_and_update(
+        {"user_id": given_id},
+        {"$set": user.to_bson()}
+    )
+    up_user = users.find_one_or_404({"user_id": given_id})
+    return User(**up_user).to_json()
+
+
+@app.route("/users/", methods=["POST"])
+def add_user():
+    new_id = 0
+    cursor = users.find().sort("user_id", -1).limit(1)
+    for curr_usr in cursor:
+        op_usr = User(**curr_usr)
+        new_id = op_usr.comment_id
+    new_id += 1
+
+    raw_usr = request.get_json()
+    raw_usr["user_id"] = id
+
+    user = User(**raw_usr)
+    users.insert_one(user.to_bson())
+    return user.to_json()
