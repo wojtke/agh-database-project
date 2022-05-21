@@ -64,3 +64,29 @@ def find_articles_with_category(given_category):
 def find_articles_with_tag(given_tag):
     cursor = articles.find({"tags" : {"$all" : [given_tag]}})
     return {"articles": [Article(**doc).to_json() for doc in cursor]}
+
+
+@app.route("/articles/tags", methods=["GET"])
+def find_all_tags():
+    alls = articles.find()
+    all_tags = []
+    for article in alls:
+        c_article = Article(**article) 
+        for tag in c_article.tags:
+            if tag not in all_tags:
+                all_tags.append(tag)
+
+    return {"tags": all_tags}
+
+
+@app.route("/articles/categories", methods=["GET"])
+def find_all_categories():
+    alls = articles.find()
+    all_categories = []
+    for article in alls:
+        c_article = Article(**article) 
+        category = c_article.category
+        if category not in all_categories:
+                all_categories.append(category)
+
+    return {"categories": all_categories}
