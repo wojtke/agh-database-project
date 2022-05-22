@@ -1,7 +1,3 @@
-from curses.ascii import US
-from re import U
-
-from matplotlib.style import use
 import flask
 from flask import request, url_for
 from ..models.user import User

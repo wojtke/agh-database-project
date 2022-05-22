@@ -1,6 +1,7 @@
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel, Field
-from typing import List, Optional
+from typing import List, Optional, Union
+from datetime import datetime
 
 from .objectid import PydanticObjectId
 
@@ -13,10 +14,15 @@ class Article(BaseModel):
     category: str
     content: str
     image_source: str
-    n_of_grades: int
-    sum_of_grades: int
-    n_of_views: int
-    date_added: Optional[str]
+
+    # computed properties
+    n_of_grades: int = 0
+    sum_of_grades: int = 0
+    n_of_views: int = 0
+
+    # dates
+    date_added: Union[Optional[datetime], str] = datetime.utcnow()
+    date_updated: Union[Optional[datetime], str] = datetime.utcnow()
 
     def to_json(self):
         return jsonable_encoder(self, exclude_none=True)
