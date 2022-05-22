@@ -23,6 +23,8 @@ class User(BaseModel):
     ratings: List[Rating]
     views: List[View]
 
+    recommended_articles: List[int] = []
+
     def to_json(self):
         return jsonable_encoder(self, exclude_none=True)
 

@@ -1,36 +1,21 @@
+from pymongo import MongoClient
+import dotenv
+import os
+
 import numpy as np
 import pandas as pd
 from scipy import sparse
 from scipy.sparse.linalg import svds
 
-"""
-Na wejsciu powinnny byc user i jego ratingi dla artykulow.
-Moze tez byc pobrana aktywnosc uzytkownika (wyswietlenia dla artykulow).
 
-Chcemy zrobic z tego score dla kazdej pary user-artykul. Dataframe taki.
-
-
-svd - redukcja wymiarowości tak żeby dla każdego usera i artykulu było po k featurow
-mozna to robic lepiej niz svd, ale trudno juz
-
-potem mając te featurey, mozemy zrobic regresję zeby oceniło jak bardzo user pasuje do artykułu
-czyli regrsja score dla tej pary user-artykul. Chcemy żeby było większe niż średnio user ma.
-...
-
-Ostatecznie dla danego usera chcemy moc wywolac metode, ktora zwroci nam liste
-artykulow, ktore powinny sie mu podobac (wykluczając te, ktore juz oceniali).
-
-Taką listę najlepiej zapisać w dokumencie usera żeby nie wołać funkcji cały czas.
-"""
-
-
-# TODO ogarnąć żeby było indeksowane albo tym dataframem albo sparse matrix, nie obie na raz
 class Recommendations:
     def __init__(self, user_ids, article_ids):
         self.users = {user_ids[i]: i for i in range(len(user_ids))}
+        self.user_ids = user_ids
         self.articles = {article_ids[i]: i for i in range(len(article_ids))}
+        self.article_ids = article_ids
 
-        self.df = pd.DataFrame(columns=['customer_id', 'article_id', 'score'])
+        self.df = pd.DataFrame(columns=['user_id', 'article_id', 'score'])
         self.matrix = None
         self.article_features = None
         self.user_features = None
@@ -43,7 +28,7 @@ class Recommendations:
         if per is None:
             return self.df.score.mean()
         elif per == 'user':
-            groupby_col = 'customer_id'
+            groupby_col = 'user_id'
         elif per == 'article':
             groupby_col = 'article_id'
         else:
@@ -52,10 +37,18 @@ class Recommendations:
         return self.df.groupby(groupby_col).mean()['score'].to_dict()
 
     def build_matrix(self):
-        self.df['customer_no'] = self.df['customer_id'].map(self.users)
+        self.df['user_no'] = self.df['user_id'].map(self.users)
         self.df['article_no'] = self.df['article_id'].map(self.articles)
 
-        self.matrix = sparse.csr_matrix((self.df.score, (self.df.customer_no, self.df.article_no)), dtype=np.float32)
+        user_avg_scores = self.get_avg_score('user')
+        self.df['score_normalized'] = self.df.apply(
+            lambda row: row.score - user_avg_scores[row.user_id], axis=1)
+
+        self.matrix = sparse.coo_matrix(
+            (self.df.score, (self.df.user_no, self.df.article_no)),
+            shape=(len(self.articles), len(self.users)),
+            dtype=np.float32).tocsr()
+
 
     def build_svd(self, k=5):
         u, s, vt = svds(self.matrix, k)
@@ -72,42 +65,49 @@ class Recommendations:
         user_no = self.users[user_id]
         user_features = self.user_features[user_no]
 
-        recs = np.argsort(-(self.article_features @ user_features))
+        matches = self.article_features @ user_features
         if unseen_only:
             unseen = self.matrix[user_no].toarray().flatten() == 0
+            matches = matches[unseen]
 
-            recs = recs[unseen]
+        rec_article_nos = np.argsort(-matches)[:n]
 
-        return recs[:n]
+        return [self.article_ids[x] for x in rec_article_nos]
 
 
 if __name__ == '__main__':
-    # TODO żeby to było pobierane z bazy danych
-    users = ["user1", "user2", "user3", "user4", "user5", "user6", "user7"]
-    articles = ["article1", "article2", "article3", "article4", "article5", "article6"]
-    scores = {
-        "user1": [("article1", 1), ("article2", 2)],
-        "user2": [("article2", 1), ("article3", 6)],
-        "user3": [("article2", 8)],
-        "user4": [("article3", 9), ("article4", 2), ("article5", 6), ("article6", 4)],
-        "user5": [("article1", 1), ("article4", 2), ("article6", 4)],
-        "user6": [("article1", 3), ("article2", 6), ("article3", 6), ("article4", 2), ("article5", 6), ("article6", 4)],
-        "user7": [("article3", 6), ("article6", 9)]
-    }
+    # init db connection
+    dotenv.load_dotenv()
+    client = MongoClient(os.environ["FLASK_MONGO_URI"])
+    db = client.get_default_database()
+    users = db.get_collection("users")
+    articles = db.get_collection("articles")
 
-    R = Recommendations(users, articles)
-    for user, scores in scores.items():
-        R.add_user_score(user, scores)
+    # Init the recommender
+    user_ids = [user['user_id'] for user in users.find()]
+    article_ids = [article['article_id'] for article in articles.find()]
+    R = Recommendations(user_ids, article_ids)
+
+    # load all users' ratings
+    for user_ratings in users.find({}, {"user_id": True, 'ratings': True}):
+        user_id = user_ratings['user_id']
+        ratings = [(r['article_id'], r['grade']) for r in user_ratings.get('ratings')]
+        print(user_id, ratings)
+        R.add_user_score(user_id, ratings)
+
+    # build
     R.build_matrix()
-    R.build_svd()
+    R.build_svd(k=5)
 
-    for user in users:
-        recs = R.get_user_recommendations(user)
-        # TODO żeby to było zapisane do bazy danych
-        print(user, np.array(articles)[recs])
-
-
-
-
+    # get recommendations for each user and save to db
+    for user_id in user_ids:
+        rec_articles = R.get_user_recommendations(user_id, n=10)
+        print(user_id, rec_articles)
+        users.update_one(
+            {"user_id": user_id},
+            {"$set": {
+                "recommended_articles": rec_articles
+            }},
+        )
 
 
