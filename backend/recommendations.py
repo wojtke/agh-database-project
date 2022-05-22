@@ -7,28 +7,6 @@ import pandas as pd
 from scipy import sparse
 from scipy.sparse.linalg import svds
 
-from models.user import User, Rating
-
-"""
-Na wejsciu powinnny byc user i jego ratingi dla artykulow.
-Moze tez byc pobrana aktywnosc uzytkownika (wyswietlenia dla artykulow).
-
-Chcemy zrobic z tego score dla kazdej pary user-artykul. Dataframe taki.
-
-
-svd - redukcja wymiarowości tak żeby dla każdego usera i artykulu było po k featurow
-mozna to robic lepiej niz svd, ale trudno juz
-
-potem mając te featurey, mozemy zrobic regresję zeby oceniło jak bardzo user pasuje do artykułu
-czyli regrsja score dla tej pary user-artykul. Chcemy żeby było większe niż średnio user ma.
-...
-
-Ostatecznie dla danego usera chcemy moc wywolac metode, ktora zwroci nam liste
-artykulow, ktore powinny sie mu podobac (wykluczając te, ktore juz oceniali).
-
-Taką listę najlepiej zapisać w dokumencie usera żeby nie wołać funkcji cały czas.
-"""
-
 
 class Recommendations:
     def __init__(self, user_ids, article_ids):
@@ -62,10 +40,15 @@ class Recommendations:
         self.df['user_no'] = self.df['user_id'].map(self.users)
         self.df['article_no'] = self.df['article_id'].map(self.articles)
 
+        user_avg_scores = self.get_avg_score('user')
+        self.df['score_normalized'] = self.df.apply(
+            lambda row: row.score - user_avg_scores[row.user_id], axis=1)
+
         self.matrix = sparse.coo_matrix(
             (self.df.score, (self.df.user_no, self.df.article_no)),
             shape=(len(self.articles), len(self.users)),
             dtype=np.float32).tocsr()
+
 
     def build_svd(self, k=5):
         u, s, vt = svds(self.matrix, k)
@@ -114,10 +97,17 @@ if __name__ == '__main__':
 
     # build
     R.build_matrix()
-    R.build_svd(k=2)
+    R.build_svd(k=5)
 
-    # get recommendations for each user TODO and save them
-    for user in user_ids:
-        print(user, R.get_user_recommendations(user, n=20))
+    # get recommendations for each user and save to db
+    for user_id in user_ids:
+        rec_articles = R.get_user_recommendations(user_id, n=10)
+        print(user_id, rec_articles)
+        users.update_one(
+            {"user_id": user_id},
+            {"$set": {
+                "recommended_articles": rec_articles
+            }},
+        )
 
 
