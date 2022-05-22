@@ -1,0 +1,4 @@
+<form (ngSubmit)="publishComment()" #Form="ngForm">
+    <label for="content"></label>
+    <input type="text" name="content" id="content" reqired [(ngModel)]="comment.content">
+</form>

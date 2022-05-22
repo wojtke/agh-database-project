@@ -46,6 +46,11 @@ POST http://127.0.0.1:5001/cocktails/
 Content-Type: application/json
 
 {
+  "ingredients": [
+    {
+      "name": "7-Up"
+    }
+  ],
   "instructions": [
     "make a drink"
   ],

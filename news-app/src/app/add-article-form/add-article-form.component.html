@@ -1,0 +1,45 @@
+<app-top></app-top>
+<form (ngSubmit)="addArticle()" #Form="ngForm">
+    <div>
+        <label for="">Tytuł</label>
+        <input type="text">
+    </div>
+
+
+    <div>
+        <label for="">Tagi</label>
+        <div>
+            <input type="checkbox">
+            <label for="">Dom</label>
+        </div>
+
+        <div>
+            <input type="checkbox">
+            <label for="">Przyroda</label>
+        </div>
+
+        <div>
+            <input type="checkbox">
+            <label for="">Telefon</label>
+        </div>
+
+    </div>
+
+    <div>
+        <label for="">Kategoria</label>
+        <input type="text">
+    </div>
+
+    <div>
+        <label for="">Treść</label>
+        <input type="text">
+    </div>
+
+    <div>
+        <label for="">Link do zdjęcia</label>
+        <input type="url">
+    </div>
+
+
+    <button type="submit">Opublikuj</button>
+</form>

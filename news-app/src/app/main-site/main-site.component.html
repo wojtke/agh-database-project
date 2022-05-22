@@ -1,0 +1,39 @@
+<div class="body">
+    <div class="header">
+        <div class="logo">LOGO</div>
+        <div class="categories">
+            <div class="home">HOME</div>
+            <div class="news">NEWS</div>
+            <div class="sport">SPORT</div>
+            <div class="addArticle" *ngIf="">
+                <a routerlink="/article-form"></a>
+            </div>
+        </div>
+        <div class="signIn"><a routerLink="/log-in">Sign IN</a></div>
+    </div>
+
+    <div class="recent">
+        <p>Z ostatniej chwili</p>
+        <div class="articles">
+            <div *ngFor="let article of articles">
+                <div class="image"><img src="{{article.image_source}}" alt="img"></div>
+                <div>{{article.title}}</div>
+                <div>{{article.content}}</div>
+                <a routerLink="/article/{{article.article_id}}">Czytaj...</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="forYou">
+        <p>Dla Ciebie</p>
+        <div class="articles">
+            <div *ngFor="let article of recent_articles">
+                <div class="image"><img src="{{article.image_source}}" alt="img"></div>
+                <div>{{article.title}}</div>
+                <div>{{article.content}}</div>
+                <a routerLink="/article/{{article.article_id}}">Czytaj...</a>
+            </div>
+        </div>
+    </div>
+    <div class="footer"></div>
+</div>
