@@ -49,7 +49,6 @@ class Recommendations:
             shape=(len(self.articles), len(self.users)),
             dtype=np.float32).tocsr()
 
-
     def build_svd(self, k=5):
         u, s, vt = svds(self.matrix, k)
 
