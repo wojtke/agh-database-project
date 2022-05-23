@@ -22,9 +22,8 @@ class Recommendations:
         self.article_features = None
         self.user_features = None
 
-    def add_user_score(self, user_id, scores):
-        for article_id, score in scores:
-            self.df.loc[len(self.df)] = [user_id, article_id, score]
+    def add_user_score(self, user_id, article_id, score):
+        self.df.loc[len(self.df)] = [user_id, article_id, score]
 
     def get_avg_score(self, per=None):
         if per is None:
@@ -103,13 +102,10 @@ if __name__ == '__main__':
         "score": {"$sum": 1 }
     } }
     ])
-    '''
-    for user_ratings in users.find({}, {"user_id": True, 'ratings': True}):
-        user_id = user_ratings['user_id']
-        ratings = [(r['article_id'], r['grade']) for r in user_ratings.get('ratings')]
-        print(user_id, ratings)
-        R.add_user_score(user_id, ratings)
-    '''
+    for score in scores:
+        user_id = score["_id"]['user_id']
+        article_id = score["_id"]['article_id']
+        R.add_user_score(user_id, article_id, score["score"])
 
     # build
     R.build_matrix()
