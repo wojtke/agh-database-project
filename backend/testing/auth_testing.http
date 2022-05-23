@@ -1,0 +1,28 @@
+###
+POST http://127.0.0.1:5001/signup
+Content-Type: application/json
+
+{
+  "login": "jan2",
+  "password1": "hehe",
+  "password2": "hehe",
+  "name": "Jan"
+}
+
+###
+POST http://127.0.0.1:5001/login
+Content-Type: application/json
+
+{
+  "login": "jan2",
+  "password": "hehe"
+}
+
+###
+GET http://127.0.0.1:5001/users/18
+Accept: application/json
+
+
+### Recommendations yeah
+GET http://127.0.0.1:5001/articles/recommended/2
+Content-Type: application/json

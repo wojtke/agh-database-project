@@ -3,6 +3,7 @@ from pydantic import BaseModel, Field
 from typing import List, Optional
 
 from .objectid import PydanticObjectId
+from flask_login import UserMixin
 
 
 class Rating(BaseModel):
@@ -15,13 +16,14 @@ class View(BaseModel):
     n_view: int
 
 
-class User(BaseModel):
+class User(UserMixin, BaseModel):
     id: Optional[PydanticObjectId] = Field(None, alias = "_id")
     user_id: int
     name: str
     login: str
-    ratings: List[Rating]
-    views: List[View]
+    password: Optional[str]
+    ratings: List[Rating] = []
+    views: List[View] = []
 
     recommended_articles: List[int] = []
 

@@ -1,5 +1,7 @@
 import flask
 from flask import request, url_for
+from flask_login import login_required
+
 from ..models.article import Article
 from pydantic.error_wrappers import ValidationError
 
@@ -48,11 +50,11 @@ def find_articles_with_tag(given_tag):
 
 # TODO: should not have to pass the user_id
 @app.route("/articles/recommended/<int:user_id>", methods=["GET"])
+@login_required
 def get_recommended_articles(user_id):
     """GET a list of recommended articles for a user."""
 
     recommended = users.find_one({"user_id": user_id})["recommended_articles"]
-    print(recommended)
 
     paginate_params, paginate_metadata = get_sort_and_paginate_params(request)
     page, per_page, sort, order = paginate_params
