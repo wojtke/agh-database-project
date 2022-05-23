@@ -13,24 +13,28 @@ import { AppModule } from '../app.module';
 export class MainSiteComponent implements OnInit {
   recommended: Article[] = [];
   recent : Article[] = [];
+  categories : String[] = [];
+  tags : String[] = [];
 
   userLoggedIn : Boolean = AppModule.current_user.login === "";
   constructor(private articleProvider : ArticleService, private http:HttpClient) { }
 
   ngOnInit(): void {
-    this.getRecommended();
-    this.getRecent();
-  }
-
-  getRecent(){
     this.articleProvider.getArticles().subscribe(data =>{
       this.recent = data.articles.slice(0, 3);
     } );
-  }
 
-  getRecommended(){
     this.articleProvider.getArticles().subscribe(data =>{
       this.recommended = data.articles.slice(0, 3);
     } );
+
+    this.articleProvider.getCategories().subscribe(data =>{
+      this.categories = data.categories;
+    } );
+
+    this.articleProvider.getTags().subscribe(data =>{
+      this.tags = data.tags;
+    } );
   }
+
 }

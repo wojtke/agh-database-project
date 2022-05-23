@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import { Article, ArticlesData } from './models';
+import { Article, Articles, ArticlesData, Categories, Tags } from './models';
 
 @Injectable({
   providedIn: 'root'
@@ -30,21 +30,27 @@ export class ArticleService {
     return this.http.get<Article[]>(this.articlesUrl + '/recommended');
   }
 
-  getArticlesForUser(id : Number) : Observable<Article[]>{
-    return this.http.get<Article[]>(this.articlesUrl + '/user/' + id.toString());
+  getArticlesByCategory(category : String) : Observable<Articles>{
+    console.log(category);
+    return this.http.get<Articles>(this.articlesUrl+'/category/'+category);
   }
 
-  getArticlesByCategory(category : String) : Observable<Article[]>{
-    return this.http.get<Article[]>(this.articlesUrl+'/category/'+category);
-  }
-
-  getArticlesByTag(tag : String) : Observable<Article[]>{
-    return this.http.get<Article[]>(this.articlesUrl + '/tag/' + tag);
+  getArticlesByTag(tag : String) : Observable<Articles>{
+    return this.http.get<Articles>(this.articlesUrl + '/tag/' + tag);
   }
 
   getArticleById(id : Number) : Observable<Article>{
     return this.http.get<Article>(this.articlesUrl + "/" + id.toString());
   }
+
+  getCategories() : Observable<Categories>{
+    return this.http.get<Categories>(this.articlesUrl + "/categories");
+  }
+
+  getTags() : Observable<Tags>{
+    return this.http.get<Tags>(this.articlesUrl + "/tags");
+  }
+
 
   publishAritcle(article : Article){
     this.http.post<Article>(this.articlesUrl, article, this.httpOptions);

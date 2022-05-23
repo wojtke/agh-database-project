@@ -37,6 +37,17 @@ export interface ArticlesData{
   "articles": Article[];
 }
 
+export interface Articles{
+  articles: Article[]
+}
+
+export interface Categories{
+  categories: String[]
+}
+export interface Tags{
+  tags: String[]
+}
+
 export class View{
   article_id: Number;
   n_view: Number;
@@ -105,4 +116,9 @@ export class Comment{
     this.article_id = 0;
     this.content = '';
   }
+}
+
+export enum ArticlesBy{
+  tag = "tag",
+  category = "category"
 }

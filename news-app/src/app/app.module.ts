@@ -14,6 +14,7 @@ import { User } from './services/models';
 import { TopComponent } from './top/top.component';
 import { AddCommentFormComponent } from './add-comment-form/add-comment-form.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
+import { ArticlesSectionComponent } from './articles-section/articles-section.component';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { SignUpComponent } from './sign-up/sign-up.component';
     PageNotFoundComponent,
     TopComponent,
     AddCommentFormComponent,
-    SignUpComponent
+    SignUpComponent,
+    ArticlesSectionComponent
   ],
   imports: [
     BrowserModule,

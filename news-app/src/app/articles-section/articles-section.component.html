@@ -1,0 +1,11 @@
+<div class="body">
+    <app-top [showLogin]="true"></app-top>
+    <div class="articles">
+        <div *ngFor="let article of articles">
+            <div class="image"><img src="{{article.image_source}}" alt="img"></div>
+            <div>{{article.title}}</div>
+            <div>{{article.content}}</div>
+            <a routerLink="/article/{{article.article_id}}">Czytaj...</a>
+        </div>
+    </div>
+</div>

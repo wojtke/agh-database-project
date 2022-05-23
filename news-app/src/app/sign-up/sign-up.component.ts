@@ -23,6 +23,8 @@ export class SignUpComponent implements OnInit {
     console.log(this.user);
     this.userService.signUp(this.user).subscribe(res => {
       this.message = res.message;
+      console.log(this.user);
+      console.log(res.user);
       if(res.user != undefined){
         this.currentuser = res.user;
         this.router.navigate(['/main-site']);

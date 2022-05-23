@@ -9,7 +9,8 @@ dotenv.load_dotenv()
 
 app = Flask(__name__)
 app.config.from_prefixed_env()
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*", "allow_headers": "*", "expose_headers": "*"}})
+app.secret_key = 'Very_Secret_Key'
 
 login_manager = LoginManager()
 login_manager.init_app(app)
