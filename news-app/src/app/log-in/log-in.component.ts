@@ -12,7 +12,6 @@ import { UserService } from '../services/user.service';
 })
 export class LogInComponent implements OnInit {
   user = new User();
-  currentuser = AppModule.current_user;
   message : String = '';
 
   loginError : Boolean = false;
@@ -25,9 +24,9 @@ export class LogInComponent implements OnInit {
   logIn(){
     this.userService.logIn(this.user).subscribe(res => {
       this.message = res.message;
-      console.log(this.message);
+      console.log(this.message, res.user);
       if(res.user != undefined){
-        this.currentuser = res.user;
+        AppModule.current_user = res.user;
         this.router.navigate(['/main-site']);
       }
       else{

@@ -37,8 +37,10 @@ def login():
     if not bcrypt.checkpw(password.encode("utf-8"), user["password"].encode("utf-8")):
         return {"message": "Invalid credentials"}, 401
 
-    login_user(User(**user), duration=timedelta(days=1))
-    return {"message": "Logged in successfully."}, 200
+    logged_user = User(**user)
+    login_user(logged_user, duration=timedelta(days=1))
+    return {"message": "Logged in successfully.",
+            "user": logged_user.to_json()}, 200
 
 
 @app.route("/signup", methods=["POST"])

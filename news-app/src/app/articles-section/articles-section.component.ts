@@ -21,7 +21,7 @@ export class ArticlesSectionComponent implements OnInit {
       let name = String(params.get('name'));
       console.log(choose_by, name);
       switch (choose_by) {
-      case 'tags':
+      case 'tag':
         return this.articleService.getArticlesByTag(name);
       default:
         return this.articleService.getArticlesByCategory(name);

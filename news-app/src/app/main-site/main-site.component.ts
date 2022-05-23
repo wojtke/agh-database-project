@@ -16,7 +16,7 @@ export class MainSiteComponent implements OnInit {
   categories : String[] = [];
   tags : String[] = [];
 
-  userLoggedIn : Boolean = AppModule.current_user.login === "";
+  userLoggedIn : Boolean = AppModule.current_user.login !== "";
   constructor(private articleProvider : ArticleService, private http:HttpClient) { }
 
   ngOnInit(): void {
@@ -36,5 +36,7 @@ export class MainSiteComponent implements OnInit {
       this.tags = data.tags;
     } );
   }
-
+  button(){
+    console.log(AppModule.current_user, this.userLoggedIn);
+  }
 }

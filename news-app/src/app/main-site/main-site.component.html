@@ -51,8 +51,9 @@
     </div>
     <div class="tags">
         <div *ngFor="let tag of tags">
-            <a routerLink="/section/category/{{tag}}"></a>
+            <a routerLink="/section/tag/{{tag}}"></a>
         </div>
     </div>
+    <button (click)="button()">Button</button>
     <div class="footer"></div>
 </div>
