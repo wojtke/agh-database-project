@@ -1,6 +1,9 @@
+from tkinter.tix import Tree
 import flask
 from flask import request, url_for
 from ..models.comment import Comment
+from pydantic.error_wrappers import ValidationError
+
 
 from .. import app, comments
 from ..models.interactions import add_interaction
@@ -25,7 +28,12 @@ def delete_comment(given_id):
 
 @app.route("/comment/<int:given_id>", methods=["PUT"])
 def update_comment(given_id):
-    comment = Comment(**request.get_json())
+
+    try:
+        comment = Comment(**request.get_json())
+    except ValidationError as e:
+        return {"validation error": e.errors()}, 400
+    
     comments.find_one_and_update(
         {"comment_id": given_id},
         {"$set": comment.to_bson()}
@@ -46,7 +54,11 @@ def add_comment():
     raw_com = request.get_json()
     raw_com["comment_id"] = id
 
-    comment = Comment(**raw_com)
+    try:
+        comment = Comment(**raw_com)
+    except ValidationError as e:
+        return {"validation error": e.errors()}, 400
+
     comments.insert_one(comment.to_bson())
 
     add_interaction(comment.user_id, comment.article_id, type="comment")
