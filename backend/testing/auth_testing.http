@@ -23,6 +23,6 @@ GET http://127.0.0.1:5001/users/18
 Accept: application/json
 
 
-### Recommendations yeah
-GET http://127.0.0.1:5001/articles/recommended/2
+### Recommendations just for logged in user
+GET http://127.0.0.1:5001/articles/recommended
 Content-Type: application/json

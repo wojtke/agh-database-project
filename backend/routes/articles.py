@@ -1,6 +1,6 @@
 import flask
 from flask import request, url_for
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 from ..models.article import Article
 from pydantic.error_wrappers import ValidationError
@@ -48,12 +48,29 @@ def find_articles_with_tag(given_tag):
     return {"articles": [Article(**doc).to_json() for doc in cursor]}
 
 
-# TODO: should not have to pass the user_id
-@app.route("/articles/recommended/<int:user_id>", methods=["GET"])
+@app.route("/articles/recommended", methods=["GET"])
 @login_required
-def get_recommended_articles(user_id):
-    """GET a list of recommended articles for a user."""
+def get_recommended_articles():
+    """GET a list of recommended articles for a user that's logged in."""
 
+    user_id = current_user.user_id
+    recommended = users.find_one({"user_id": user_id})["recommended_articles"]
+
+    paginate_params, paginate_metadata = get_sort_and_paginate_params(request)
+    page, per_page, sort, order = paginate_params
+
+    cursor = articles.find({"article_id": {"$in": recommended}}) \
+        .sort(sort, order) \
+        .skip(per_page * (page - 1)).limit(per_page)
+
+    return {
+        "articles": [Article(**doc).to_json() for doc in cursor],
+        **paginate_metadata
+    }
+
+@app.route("/articles/recommended/<int:user_id>", methods=["GET"])
+def get_recommended_articles_userid(user_id):
+    """GET a list of recommended articles for a user."""
     recommended = users.find_one({"user_id": user_id})["recommended_articles"]
 
     paginate_params, paginate_metadata = get_sort_and_paginate_params(request)
