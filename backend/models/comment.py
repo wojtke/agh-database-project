@@ -7,7 +7,7 @@ from .objectid import PydanticObjectId
 
 class Comment(BaseModel):
     id: Optional[PydanticObjectId] = Field(None, alias="_id")
-    comment_id: int
+    comment_id: Optional[int]
     user_id: int
     article_id: int
     content: str
