@@ -1,11 +1,13 @@
 import flask
-from flask import request, url_for
+from flask import request, url_for, redirect
 from flask_login import login_required, current_user
 
 from ..models.article import Article
 from pydantic.error_wrappers import ValidationError
 
 from .. import app, articles, users
+
+from ..models.interactions import Interaction, add_interaction
 
 
 @app.route("/articles/", methods=["GET"])
@@ -51,10 +53,16 @@ def find_articles_with_tag(given_tag):
 @app.route("/articles/recommended", methods=["GET"])
 @login_required
 def get_recommended_articles():
-    """GET a list of recommended articles for a user that's logged in."""
+    """
+    GET a list of recommended articles for a user that's logged in.
+    If none are found, redirect to GET /articles.
+    """
 
     user_id = current_user.user_id
+
     recommended = users.find_one({"user_id": user_id})["recommended_articles"]
+    if not recommended:
+        return redirect(url_for("list_articles"))
 
     paginate_params, paginate_metadata = get_sort_and_paginate_params(request)
     page, per_page, sort, order = paginate_params
@@ -90,6 +98,7 @@ def get_recommended_articles_userid(user_id):
 def get_article(given_id):
     """GET an article by its ID."""
     this_article = articles.find_one_or_404({"article_id": given_id})
+    add_interaction(current_user.user_id, given_id, type="view")
     return Article(**this_article).to_json()
 
 

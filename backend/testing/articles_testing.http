@@ -45,7 +45,6 @@ Content-Type: application/json
 DELETE http://127.0.0.1:5001/articles/18
 Content-Type: application/json
 
-
 ### By tag
 GET http://127.0.0.1:5001/articles/tag/test
 Content-Type: application/json

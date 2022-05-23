@@ -23,6 +23,7 @@ recipes: Collection = pymongo.db.recipes
 articles: Collection = pymongo.db.articles
 users: Collection = pymongo.db.users
 comments: Collection = pymongo.db.comments
+interactions: Collection = pymongo.db.interactions
 
 
 from .routes import cocktails, articles, users, comments, auth

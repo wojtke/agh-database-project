@@ -17,7 +17,7 @@ class View(BaseModel):
 
 
 class User(UserMixin, BaseModel):
-    id: Optional[PydanticObjectId] = Field(None, alias = "_id")
+    id: Optional[PydanticObjectId] = Field(None, alias="_id")
     user_id: int
     name: str
     login: str

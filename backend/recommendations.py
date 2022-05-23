@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from pymongo import MongoClient
 import dotenv
 import os
@@ -20,9 +22,8 @@ class Recommendations:
         self.article_features = None
         self.user_features = None
 
-    def add_user_score(self, user_id, scores):
-        for article_id, score in scores:
-            self.df.loc[len(self.df)] = [user_id, article_id, score]
+    def add_user_score(self, user_id, article_id, score):
+        self.df.loc[len(self.df)] = [user_id, article_id, score]
 
     def get_avg_score(self, per=None):
         if per is None:
@@ -81,6 +82,7 @@ if __name__ == '__main__':
     db = client.get_default_database()
     users = db.get_collection("users")
     articles = db.get_collection("articles")
+    interactions = db.get_collection("interactions")
 
     # Init the recommender
     user_ids = [user['user_id'] for user in users.find()]
@@ -88,11 +90,22 @@ if __name__ == '__main__':
     R = Recommendations(user_ids, article_ids)
 
     # load all users' ratings
-    for user_ratings in users.find({}, {"user_id": True, 'ratings': True}):
-        user_id = user_ratings['user_id']
-        ratings = [(r['article_id'], r['grade']) for r in user_ratings.get('ratings')]
-        print(user_id, ratings)
-        R.add_user_score(user_id, ratings)
+    scores = interactions.aggregate( [
+    { "$match": { "date_start": {"$gt": datetime.utcnow() - timedelta(days=1)}}},
+    { "$project": {"interactions": "$interactions"} },
+    { "$unwind": "$interactions" },
+    { "$group": {
+        "_id": {
+            "article_id":"$interactions.user_id",
+            "user_id":"$interactions.article_id"
+        },
+        "score": {"$sum": 1 }
+    } }
+    ])
+    for score in scores:
+        user_id = score["_id"]['user_id']
+        article_id = score["_id"]['article_id']
+        R.add_user_score(user_id, article_id, score["score"])
 
     # build
     R.build_matrix()
