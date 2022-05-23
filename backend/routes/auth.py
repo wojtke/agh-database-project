@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from bson import ObjectId
 from flask import request
 import bcrypt
@@ -15,7 +17,6 @@ from ..models.user import User
 @login_manager.user_loader
 def load_user(user_id):
     user = users.find_one({"_id": PydanticObjectId(user_id)})
-    print(user)
     return User(**user) if user else None
 
 
@@ -36,7 +37,7 @@ def login():
     if not bcrypt.checkpw(password.encode("utf-8"), user["password"].encode("utf-8")):
         return {"message": "Invalid credentials"}, 401
 
-    login_user(User(**user))
+    login_user(User(**user), duration=timedelta(days=1))
     return {"message": "Logged in successfully."}, 200
 
 

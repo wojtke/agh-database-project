@@ -1,4 +1,4 @@
-###
+### Registering
 POST http://127.0.0.1:5001/signup
 Content-Type: application/json
 
@@ -9,7 +9,8 @@ Content-Type: application/json
   "name": "Jan"
 }
 
-###
+
+### Logging in
 POST http://127.0.0.1:5001/login
 Content-Type: application/json
 
@@ -18,7 +19,8 @@ Content-Type: application/json
   "password": "hehe"
 }
 
-###
+
+### Check the user
 GET http://127.0.0.1:5001/users/18
 Accept: application/json
 
@@ -26,3 +28,7 @@ Accept: application/json
 ### Recommendations just for logged in user
 GET http://127.0.0.1:5001/articles/recommended
 Content-Type: application/json
+
+
+### Log out
+POST http://127.0.0.1:5001/logout
