@@ -15,9 +15,6 @@
   - bucket pattern
   - get popular articles
 - recommendations
-  - pipeline to run things
-  - save per user
-  - get request for recommendations
   - save svd as binary data or sth?
   - maybe something better than svd
 - basic recommendations
@@ -26,7 +23,3 @@
   - need some articles 
   - need users
   - need interactions between them
-- login and register
-  - jwt?
-  - hash pswd in users doc
-  - 

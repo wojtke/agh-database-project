@@ -3,6 +3,7 @@ from flask import request, url_for
 from ..models.comment import Comment
 
 from .. import app, comments
+from ..models.interactions import add_interaction
 
 
 @app.route("/comments/article/<int:article_id>", methods=["GET"])
@@ -47,5 +48,7 @@ def add_comment():
 
     comment = Comment(**raw_com)
     comments.insert_one(comment.to_bson())
+
+    add_interaction(comment.user_id, comment.article_id, type="comment")
     return comment.to_json()
 

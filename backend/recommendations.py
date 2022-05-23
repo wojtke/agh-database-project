@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from pymongo import MongoClient
 import dotenv
 import os
@@ -81,6 +83,7 @@ if __name__ == '__main__':
     db = client.get_default_database()
     users = db.get_collection("users")
     articles = db.get_collection("articles")
+    interactions = db.get_collection("interactions")
 
     # Init the recommender
     user_ids = [user['user_id'] for user in users.find()]
@@ -88,11 +91,25 @@ if __name__ == '__main__':
     R = Recommendations(user_ids, article_ids)
 
     # load all users' ratings
+    scores = interactions.aggregate( [
+    { "$match": { "date_start": {"$gt": datetime.utcnow() - timedelta(days=1)}}},
+    { "$project": {"interactions": "$interactions"} },
+    { "$unwind": "$interactions" },
+    { "$group": {
+        "_id": {
+            "article_id":"$interactions.user_id",
+            "user_id":"$interactions.article_id"
+        },
+        "score": {"$sum": 1 }
+    } }
+    ])
+    '''
     for user_ratings in users.find({}, {"user_id": True, 'ratings': True}):
         user_id = user_ratings['user_id']
         ratings = [(r['article_id'], r['grade']) for r in user_ratings.get('ratings')]
         print(user_id, ratings)
         R.add_user_score(user_id, ratings)
+    '''
 
     # build
     R.build_matrix()
