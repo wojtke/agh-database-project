@@ -15,6 +15,9 @@ app.secret_key = 'Very_Secret_Key'
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+login_manager = LoginManager()
+login_manager.init_app(app)
+
 pymongo = PyMongo(app)
 recipes: Collection = pymongo.db.recipes
 articles: Collection = pymongo.db.articles
