@@ -33,3 +33,9 @@ class Cocktail(BaseModel):
         if data.get("_id") is None:
             data.pop("_id", None)
         return data
+
+
+
+
+
+

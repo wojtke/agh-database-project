@@ -13,6 +13,7 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { User } from './services/models';
 import { TopComponent } from './top/top.component';
 import { AddCommentFormComponent } from './add-comment-form/add-comment-form.component';
+import { SignUpComponent } from './sign-up/sign-up.component';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import { AddCommentFormComponent } from './add-comment-form/add-comment-form.com
     ArticleComponent,
     PageNotFoundComponent,
     TopComponent,
-    AddCommentFormComponent
+    AddCommentFormComponent,
+    SignUpComponent
   ],
   imports: [
     BrowserModule,

@@ -5,10 +5,13 @@ export class Article{
   category: String;
   content: String;
   image_source: String;
-  grades: Number;
-  sumGrades: Number;
-  views: Number;
-  addDate: Date;
+
+  n_of_grades: Number;
+  sum_of_grades: Number;
+  n_of_views: Number;
+
+  date_added: Date;
+  date_updated: Date;
 
   constructor(){
     this.article_id = 0;
@@ -17,37 +20,52 @@ export class Article{
     this.category = '';
     this.content = '';
     this.image_source = '';
-    this.grades = 0;
-    this.sumGrades = 0;
-    this.views = 0;
-    this.addDate = new Date();
+    this.n_of_grades = 0;
+    this.sum_of_grades = 0;
+    this.n_of_views = 0;
+    this.date_added = new Date();
+    this.date_updated = new Date();
   }
 }
 
-export interface LinksArticles{
-  links: String[];
-  articles: Article[];
+export interface ArticlesData{
+  "_order": Number,
+  "_page": Number,
+  "_per_page": Number,
+  "_sort": String,
+  "article_count": Number,
+  "articles": Article[];
 }
 
-export interface View{
-  article_id: Number,
-  value: Number
+export class View{
+  article_id: Number;
+  n_view: Number;
+
+  constructor(){
+    this.article_id = 0;
+    this.n_view = 0;
+  }
 }
 
 export class Rating{
   article_id: Number;
-  value: Number;
+  grade: Number;
 
   constructor(){
     this.article_id = 0;
-    this.value = 0;
+    this.grade = 0;
   }
 }
 
 export class User{
-  id: Number;
+  user_id: Number;
   name: String;
+
   login: String;
+  password?: String;
+  password1?: String;
+  password2?: String;
+
   ratings: Rating[];
   views: View[];
 
@@ -57,12 +75,17 @@ export class User{
     login = '',
     ratings = [],
     views = [], ){
-      this.id = id;
+      this.user_id = id;
       this.name = name;
       this.login = login;
       this.ratings = ratings;
       this.views = views;
   }
+}
+
+export interface AuthRespone{
+  message: String,
+  user?: User
 }
 
 export interface LinksUsers{
@@ -71,13 +94,13 @@ export interface LinksUsers{
 }
 
 export class Comment{
-  id: Number;
+  comment_id: Number;
   user_id: Number;
   article_id: Number;
   content: String;
 
   constructor(){
-    this.id = 0;
+    this.comment_id = 0;
     this.user_id = 0;
     this.article_id = 0;
     this.content = '';

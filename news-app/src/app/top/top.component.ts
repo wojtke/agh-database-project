@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AppModule } from '../app.module';
 
 @Component({
@@ -7,6 +7,7 @@ import { AppModule } from '../app.module';
   styleUrls: ['./top.component.css']
 })
 export class TopComponent implements OnInit {
+  @Input() showLogin : Boolean = true;
   currentUser = AppModule.current_user;
   constructor() { }
 

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import { Article, LinksArticles } from './models';
+import { Article, ArticlesData } from './models';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +10,7 @@ import { Article, LinksArticles } from './models';
 
 export class ArticleService {
   private articlesUrl = 'http://localhost:5001/articles';
+
   private  httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
@@ -21,8 +22,12 @@ export class ArticleService {
     private http: HttpClient
   ) { }
 
-  getArticles() : Observable<LinksArticles> {
-    return this.http.get<LinksArticles>(this.articlesUrl);
+  getArticles() : Observable<ArticlesData> {
+    return this.http.get<ArticlesData>(this.articlesUrl);
+  }
+
+  getRecommendedArticles(id : Number) : Observable<Article[]>{
+    return this.http.get<Article[]>(this.articlesUrl + '/recommended');
   }
 
   getArticlesForUser(id : Number) : Observable<Article[]>{

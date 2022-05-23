@@ -16,8 +16,8 @@ export class AddCommentFormComponent implements OnInit {
   ngOnInit(): void {
   }
   publishComment(){
-    this.comment.user_id = AppModule.current_user.id;
+    this.comment.user_id = AppModule.current_user.user_id;
     this.comment.article_id = this.article_id;
-    this.commentService.publishComment(this.comment)
+    this.commentService.publishComment(this.comment);
   }
 }

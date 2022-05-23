@@ -1,13 +1,16 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
-import { LinksUsers, User } from './models';
+import { AuthRespone, LinksUsers, User } from './models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  private usersUrl = 'http://localhost:5001/users';
+  private usersUrl = 'http://127.0.0.1:5001/users';
+  private loginUrl = 'http://127.0.0.1:5001/login';
+  private signupUrl = 'http://127.0.0.1:5001/signup';
+
   private  httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
@@ -23,8 +26,12 @@ export class UserService {
     return this.http.get<LinksUsers>(this.usersUrl).pipe(catchError(this.handleError));
   }
 
-  addUser(user : User) : Observable<User>{
-    return this.http.post<User>('http://127.0.0.1:5001/users/', user, this.httpOptions).pipe(catchError(this.handleError));
+  logIn(user : User) : Observable<AuthRespone>{
+    return this.http.post<AuthRespone>(this.loginUrl, user, this.httpOptions).pipe(catchError(this.handleError));
+  }
+
+  signUp(user : User) : Observable<AuthRespone>{
+    return this.http.post<AuthRespone>(this.signupUrl, user, this.httpOptions).pipe(catchError(this.handleError));
   }
 
   private handleError(error: HttpErrorResponse) {

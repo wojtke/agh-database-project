@@ -2,7 +2,7 @@ from datetime import datetime
 from pymongo.collection import ReturnDocument
 import flask
 from flask import request, url_for
-from ..models.cocktails import Cocktail
+from ..models.cocktail import Cocktail
 from ..models.objectid import PydanticObjectId
 
 from .. import app, recipes
@@ -94,4 +94,3 @@ def delete_cocktail(slug):
         return Cocktail(**deleted_cocktail).to_json()
     else:
         flask.abort(404, "Cocktail not found")
-

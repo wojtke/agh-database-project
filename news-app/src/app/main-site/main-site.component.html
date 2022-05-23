@@ -5,17 +5,20 @@
             <div class="home">HOME</div>
             <div class="news">NEWS</div>
             <div class="sport">SPORT</div>
-            <div class="addArticle" *ngIf="">
+            <div class="addArticle" *ngIf="userLoggedIn">
                 <a routerlink="/article-form"></a>
             </div>
         </div>
-        <div class="signIn"><a routerLink="/log-in">Sign IN</a></div>
+        <div class="login">
+            <a routerLink="/log-in">LOGIN</a>
+            <a routerLink="/sign-up">Sign Up</a>
+        </div>
     </div>
 
     <div class="recent">
         <p>Z ostatniej chwili</p>
         <div class="articles">
-            <div *ngFor="let article of articles">
+            <div *ngFor="let article of recent">
                 <div class="image"><img src="{{article.image_source}}" alt="img"></div>
                 <div>{{article.title}}</div>
                 <div>{{article.content}}</div>
@@ -24,10 +27,10 @@
         </div>
     </div>
 
-    <div class="forYou">
+    <div class="forYou" *ngIf="userLoggedIn">
         <p>Dla Ciebie</p>
         <div class="articles">
-            <div *ngFor="let article of recent_articles">
+            <div *ngFor="let article of recommended">
                 <div class="image"><img src="{{article.image_source}}" alt="img"></div>
                 <div>{{article.title}}</div>
                 <div>{{article.content}}</div>

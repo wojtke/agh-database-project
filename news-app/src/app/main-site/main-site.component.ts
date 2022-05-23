@@ -11,27 +11,26 @@ import { AppModule } from '../app.module';
   styleUrls: ['./main-site.component.css']
 })
 export class MainSiteComponent implements OnInit {
+  recommended: Article[] = [];
+  recent : Article[] = [];
 
-  articles: Article[] = [];
-  recent_articles  : Article[] = [];
-  usedLoggedIn : Boolean = AppModule.current_user.login === "";
+  userLoggedIn : Boolean = AppModule.current_user.login === "";
   constructor(private articleProvider : ArticleService, private http:HttpClient) { }
 
   ngOnInit(): void {
-    this.getArticles();
+    this.getRecommended();
     this.getRecent();
   }
 
   getRecent(){
     this.articleProvider.getArticles().subscribe(data =>{
-      this.recent_articles = data.articles.slice(-4, -1);
+      this.recent = data.articles.slice(0, 3);
     } );
-
   }
 
-  getArticles(){
+  getRecommended(){
     this.articleProvider.getArticles().subscribe(data =>{
-      this.articles = data.articles.slice(0, 3);
+      this.recommended = data.articles.slice(0, 3);
     } );
   }
 }

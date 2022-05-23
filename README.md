@@ -10,8 +10,8 @@ Projekt z przedmiotu BazyDanych
 Stworzenie aplikacji webowej z newsami z kilku kategorii
 
 # Założenia projektu:
-  - Strona posiada osobne sekcje tematyczne, np: najnowsze newsy, finanse, sport, pogoda, technologie
-  - Newsy posiadają nagłówek, zdjęcie tytułowe, wstęp, treść
+  - Strona posiada osobne sekcje tematyczne, np: finanse, sport, pogoda, technologie
+  - Newsy posiadają nagłówek, zdjęcie tytułowe, treść
   - Użytkownicy mogą dodawać komentarze do wpisów
   - Redaktor może modyfikować i dodawać wpisy
   - Newsy mogą posiadać tagi
@@ -20,6 +20,6 @@ Stworzenie aplikacji webowej z newsami z kilku kategorii
 
 
 # Technologie:
-  - mongoDB
-  - php
-  - html, css, js, bootstrap
+  - MongoDB
+  - Flask, Python
+  - Angular
