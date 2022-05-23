@@ -36,9 +36,11 @@ def login():
         return {"message": "User not found"}, 404
     if not bcrypt.checkpw(password.encode("utf-8"), user["password"].encode("utf-8")):
         return {"message": "Invalid credentials"}, 401
-
-    login_user(User(**user), duration=timedelta(days=1))
-    return {"message": "Logged in successfully."}, 200
+      
+    logged_user = User(**user)
+    login_user(logged_user, duration=timedelta(days=1))
+    return {"message": "Logged in successfully.",
+            "user": logged_user.to_json()}, 200
 
 
 @app.route("/signup", methods=["POST"])
@@ -59,8 +61,12 @@ def signup():
     # create new user
     cursor = users.find().sort("user_id", -1).limit(1)
     user_id = cursor[0]["user_id"] + 1 if cursor else 1
+
+    raw_usr = request.get_json()
+    raw_usr["user_id"] = user_id
+    raw_usr["password"] = hashed
     try:
-        user = User(**request.json, password=hashed, user_id=user_id)
+        user = User(**raw_usr)
     except ValidationError as e:
         return {"validation error": e.errors()}, 400
     users.insert_one(user.to_bson())
