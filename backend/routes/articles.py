@@ -1,8 +1,11 @@
+from pyparsing import java_style_comment
 import flask
 from flask import request, url_for
 from flask_login import login_required, current_user
 
 from ..models.article import Article
+from ..models.user import User, Rating
+
 from pydantic.error_wrappers import ValidationError
 
 from .. import app, articles, users
@@ -168,7 +171,12 @@ def delete_article(given_id):
 @app.route("/articles/<int:given_id>", methods=["PUT"])
 def update_article(given_id):
     """Update an article by its ID."""
-    article = Article(**request.get_json())
+
+    try:
+        article = Article(**request.get_json())
+    except ValidationError as e:
+        return {"validation error": e.errors()}, 400
+
     articles.find_one_and_update(
         {"article_id": given_id},
         {"$set": article.to_bson()}
@@ -204,3 +212,28 @@ def get_sort_and_paginate_params(request):
     }
 
     return (page, per_page, sort, order), metadata
+
+
+@app.route("/articles/<int:given_id>/<int:new_grade>", methods=["PUT"])
+@login_required
+def add_grade_to_article(given_id, new_grade):
+    user_id = current_user.user_id
+    this_article = articles.find_one_or_404({"article_id": given_id})
+    article = Article(**this_article)
+    article.n_of_grades += 1
+    article.sum_of_grades += new_grade
+    articles.find_one_and_update(
+        {"article_id": given_id},
+        {"$set": article.to_bson()}
+    )
+    
+    rate = Rating(article_id = given_id, grade = new_grade)
+    curr_usr = users.find_one_or_404({"user_id": user_id})
+    user = User(**curr_usr)
+    user.ratings.append(rate)
+    articles.find_one_and_update(
+        {"user_id": user_id},
+        {"$set": user.to_bson()}
+    )
+
+    

@@ -1,6 +1,7 @@
 import flask
 from flask import request, url_for
 from ..models.user import User
+from pydantic.error_wrappers import ValidationError
 
 from .. import app, users
 
@@ -56,7 +57,11 @@ def delete_user(given_id):
 
 @app.route("/users/<int:given_id>", methods=["PUT"])
 def update_user(given_id):
-    user = User(**request.get_json())
+    try:
+        user = User(**request.get_json())
+    except ValidationError as e:
+        return {"validation error": e.errors()}, 400
+        
     users.find_one_and_update(
         {"user_id": given_id},
         {"$set": user.to_bson()}
@@ -77,6 +82,10 @@ def add_user():
     raw_usr = request.get_json()
     raw_usr["user_id"] = id
 
-    user = User(**raw_usr)
+    try:
+        user = User(**raw_usr)
+    except ValidationError as e:
+        return {"validation error": e.errors()}, 400
+
     users.insert_one(user.to_bson())
     return user.to_json()
