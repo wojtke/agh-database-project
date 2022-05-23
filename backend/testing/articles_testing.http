@@ -53,3 +53,6 @@ Content-Type: application/json
 GET http://127.0.0.1:5001/articles/category/zoologia
 Content-Type: application/json
 
+### Categories
+GET http://127.0.0.1:5001/articles/categories
+Content-Type: application/json

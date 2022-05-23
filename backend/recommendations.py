@@ -41,13 +41,9 @@ class Recommendations:
         self.df['user_no'] = self.df['user_id'].map(self.users)
         self.df['article_no'] = self.df['article_id'].map(self.articles)
 
-        user_avg_scores = self.get_avg_score('user')
-        self.df['score_normalized'] = self.df.apply(
-            lambda row: row.score - user_avg_scores[row.user_id], axis=1)
-
         self.matrix = sparse.coo_matrix(
             (self.df.score, (self.df.user_no, self.df.article_no)),
-            shape=(len(self.articles), len(self.users)),
+            shape=(len(self.users), len(self.articles)),
             dtype=np.float32).tocsr()
 
     def build_svd(self, k=5):
@@ -91,13 +87,13 @@ if __name__ == '__main__':
 
     # load all users' ratings
     scores = interactions.aggregate( [
-    { "$match": { "date_start": {"$gt": datetime.utcnow() - timedelta(days=1)}}},
+    { "$match": { "date_start": {"$gt": datetime.utcnow() - timedelta(days=40)}}},
     { "$project": {"interactions": "$interactions"} },
     { "$unwind": "$interactions" },
     { "$group": {
         "_id": {
-            "article_id":"$interactions.user_id",
-            "user_id":"$interactions.article_id"
+            "user_id":"$interactions.user_id",
+            "article_id":"$interactions.article_id"
         },
         "score": {"$sum": 1 }
     } }
@@ -109,12 +105,11 @@ if __name__ == '__main__':
 
     # build
     R.build_matrix()
-    R.build_svd(k=5)
+    R.build_svd(k=6)
 
     # get recommendations for each user and save to db
     for user_id in user_ids:
-        rec_articles = R.get_user_recommendations(user_id, n=10)
-        print(user_id, rec_articles)
+        rec_articles = R.get_user_recommendations(user_id, n=30)
         users.update_one(
             {"user_id": user_id},
             {"$set": {
