@@ -2,13 +2,13 @@
     <div class="header">
         <div class="logo">LOGO</div>
         <div class="categories">
-            <div class="technologia">
+            <div class="technologia" class="single_category">
                 <a routerLink="/section/categories/technologia">technologia</a>
             </div>
-            <div class="sport">
+            <div class="sport"  class="single_category">
                 <a routerLink="/section/categories/sport">Sport</a>
             </div>
-            <div class="travel">
+            <div class="travel"  class="single_category">
                 <a routerLink="/section/tags/podróże">Podróże</a>
             </div>
             <div class="addArticle" *ngIf="userLoggedIn">
@@ -22,24 +22,24 @@
     </div>
 
     <div class="recent">
-        <p>Z ostatniej chwili</p>
+        <p class="section_header">Z ostatniej chwili</p>
         <div class="articles">
-            <div *ngFor="let article of recent">
+            <div *ngFor="let article of recent" class="single_article">
                 <div class="image"><img src="{{article.image_source}}" alt="img"></div>
-                <div>{{article.title}}</div>
-                <div>{{article.content}}</div>
+                <div class="article_title">{{article.title}}</div>
+                <div class="article_content">{{article.content}}</div>
                 <a routerLink="/article/{{article.article_id}}">Czytaj...</a>
             </div>
         </div>
     </div>
 
     <div class="forYou" *ngIf="userLoggedIn">
-        <p>Dla Ciebie</p>
+        <p class="section_header">Dla Ciebie</p>
         <div class="articles">
-            <div *ngFor="let article of recommended">
+            <div *ngFor="let article of recommended" class="single_article">
                 <div class="image"><img src="{{article.image_source}}" alt="img"></div>
-                <div>{{article.title}}</div>
-                <div>{{article.content}}</div>
+                <div class="article_title">{{article.title}}</div>
+                <div class="article_content">{{article.content}}</div>
                 <a routerLink="/article/{{article.article_id}}">Czytaj...</a>
             </div>
         </div>
@@ -54,6 +54,6 @@
             <a routerLink="/section/tag/{{tag}}"></a>
         </div>
     </div>
-    <button (click)="button()">Button</button>
+    <button class="main_button" (click)="button()">Button</button>
     <div class="footer"></div>
 </div>
