@@ -25,8 +25,9 @@ export class MainSiteComponent implements OnInit {
       this.loggedUserService.current_user.subscribe(user =>{
         this.userLoggedIn = user.login !== '';
         this.current_user = user;
+        console.log(this.current_user);
         if(this.userLoggedIn){
-          this.articleProvider.getRecommendedArticles(user.id?.toString()!).subscribe(data =>{
+          this.articleProvider.getRecommendedArticles(user.user_id.toString()).subscribe(data =>{
             this.recommended = data.articles.slice(0, 3);
           });
         }
