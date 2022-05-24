@@ -118,7 +118,21 @@ export class Comment{
   }
 }
 
+export interface Comments{
+  comments: Comment[]
+}
+
 export enum ArticlesBy{
   tag = "tag",
   category = "category"
+}
+
+export class CheckboxDetails{
+  value: String;
+  isChecked: Boolean;
+
+  constructor(value : String, checked : Boolean = false) {
+    this.value = value;
+    this.isChecked = checked;
+  }
 }

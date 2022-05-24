@@ -1,17 +1,24 @@
 <div class="body">
     <app-top></app-top>
     <div class="title">
+
         <p class="title_text">{{article.title}}</p>
+
     </div>
     <div class="image"><img src="{{article.image_source}}" alt="img"></div>
     <div class="content">{{article.content}}</div>
 
-    <app-add-comment-form [article_id]="article.article_id"></app-add-comment-form>
+    <div *ngIf="userLoggedIn">
+        <app-add-rating-form [article_id]="article.article_id"></app-add-rating-form>
+
+        <app-add-comment-form [article_id]="article.article_id"></app-add-comment-form>
+    </div>
+
 
     <div *ngIf="commentsAvailable">
         <div *ngFor="let comment of comments">
-
             <p>{{comment.content}}</p>
+
         </div>
     </div>
 </div>

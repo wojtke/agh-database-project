@@ -52,7 +52,7 @@ def add_comment():
     new_id += 1
 
     raw_com = request.get_json()
-    raw_com["comment_id"] = id
+    raw_com["comment_id"] = new_id
 
     try:
         comment = Comment(**raw_com)
