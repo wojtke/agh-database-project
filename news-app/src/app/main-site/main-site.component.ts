@@ -25,16 +25,18 @@ export class MainSiteComponent implements OnInit {
       this.loggedUserService.current_user.subscribe(user =>{
         this.userLoggedIn = user.login !== '';
         this.name = user.name;
+        if(this.userLoggedIn){
+          this.articleProvider.getRecommendedArticles().subscribe(data =>{
+            this.recommended = data.articles.slice(0, 3);
+          });
+        }
+
       })
    }
 
   ngOnInit(): void {
     this.articleProvider.getArticles().subscribe(data =>{
       this.recent = data.articles.slice(0, 3);
-    } );
-
-    this.articleProvider.getArticles().subscribe(data =>{
-      this.recommended = data.articles.slice(0, 3);
     } );
 
     this.articleProvider.getCategories().subscribe(data =>{
@@ -45,5 +47,4 @@ export class MainSiteComponent implements OnInit {
       this.tags = data.tags;
     } );
   }
-
 }
