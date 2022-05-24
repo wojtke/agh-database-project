@@ -101,7 +101,10 @@ def get_recommended_articles_userid(user_id):
 def get_article(given_id):
     """GET an article by its ID."""
     this_article = articles.find_one_or_404({"article_id": given_id})
-    add_interaction(current_user.user_id, given_id, type="view")
+
+    if current_user.is_authenticated:
+        add_interaction(current_user.user_id, given_id, type="view")
+
     return Article(**this_article).to_json()
 
 
