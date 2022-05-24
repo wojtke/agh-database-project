@@ -16,9 +16,9 @@
 
 
     <div *ngIf="commentsAvailable">
-        <div *ngFor="let comment of comments">
+        <p class="comments_header"> Komentarze innych użytkowników</p>
+        <div *ngFor="let comment of comments" class="comment">
             <p>{{comment.content}}</p>
-
         </div>
     </div>
 </div>

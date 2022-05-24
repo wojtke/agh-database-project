@@ -28,3 +28,17 @@ div.content{
     margin: 0 10% 40px 10%;
     font-size: larger;
 }
+
+div.comment{
+    width: 50%;
+    margin-left: 30px;
+    padding: 5px;
+    border: 1px solid green;
+    margin-bottom: 3px;
+}
+
+p.comments_header{
+    font-size: larger;
+    font-weight: 500;
+    margin-left: 50px;
+}
