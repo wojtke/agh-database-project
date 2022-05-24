@@ -2,3 +2,7 @@ form {
     display: flexbox;
     flex-direction: row;
 }
+
+form>* {
+    margin: 5%;
+}

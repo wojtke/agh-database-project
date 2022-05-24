@@ -1,6 +1,10 @@
 <div class="body">
     <app-top [showLogin]="false"></app-top>
+
     <form (ngSubmit)="logIn()" #Form="ngForm">
+        <div class="logo">
+            <img src="../../assets/logo.png" alt="">
+        </div>
         <label for="login"></label>
         <input type="text" name="login" id="login" required [(ngModel)]="user.login" [disabled]="logged">
 

@@ -1,9 +1,8 @@
-
-*{
+* {
     font-family: Lato;
 }
 
-div.title{
+div.title {
     font-size: x-large;
     font-weight: 600;
     background-color: green;
@@ -12,19 +11,32 @@ div.title{
     margin-left: 17%;
     text-align: center;
     padding: 6px;
-    
 }
 
-
-div.image{
+div.image {
     width: 600px;
     margin-left: calc(50% - 320px);
     margin-top: 10px;
     margin-bottom: 10px;
 }
 
-
-div.content{
+div.content {
     margin: 0 10% 40px 10%;
     font-size: larger;
+}
+
+div.comments {
+    display: flexbox;
+    flex-direction: column;
+    width: 10%;
+}
+
+div.forms {
+    margin-left: 40%;
+    padding: 5%;
+}
+
+div.comments>div>p {
+    border: solid thick black;
+    text-align: center;
 }
