@@ -26,8 +26,8 @@ export class ArticleService {
     return this.http.get<ArticlesData>(this.articlesUrl);
   }
 
-  getRecommendedArticles() : Observable<Articles>{
-    return this.http.get<Articles>(this.articlesUrl + 'recommended');
+  getRecommendedArticles(user_id : String) : Observable<Articles>{
+    return this.http.get<Articles>(this.articlesUrl + 'recommended/' + user_id);
   }
 
   getArticlesByCategory(category : String) : Observable<Articles>{
