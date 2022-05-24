@@ -9,7 +9,7 @@ import { Article, Articles, ArticlesData, Categories, Tags } from './models';
 })
 
 export class ArticleService {
-  private articlesUrl = 'http://localhost:5001/articles/';
+  private articlesUrl = 'http://127.0.0.1:5001/articles/';
 
   private  httpOptions = {
     headers: new HttpHeaders({

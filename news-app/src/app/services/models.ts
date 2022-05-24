@@ -69,6 +69,7 @@ export class Rating{
 }
 
 export class User{
+  id?: String;
   user_id: Number;
   name: String;
 
