@@ -15,11 +15,12 @@
     </div>
 
 
-    <div class="comments" *ngIf="commentsAvailable">
-        <p>Komentarze</p>
-        <div *ngFor="let comment of comments">
-            <p>{{comment.content}}</p>
 
+    <div *ngIf="commentsAvailable">
+        <p class="comments_header"> Komentarze innych użytkowników</p>
+        <div *ngFor="let comment of comments" class="comment">
+
+            <p>{{comment.content}}</p>
         </div>
     </div>
 </div>

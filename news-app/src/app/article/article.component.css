@@ -25,18 +25,16 @@ div.content {
     font-size: larger;
 }
 
-div.comments {
-    display: flexbox;
-    flex-direction: column;
-    width: 10%;
+div.comment{
+    width: 50%;
+    margin-left: 30px;
+    padding: 5px;
+    border: 1px solid green;
+    margin-bottom: 3px;
 }
 
-div.forms {
-    margin-left: 40%;
-    padding: 5%;
-}
-
-div.comments>div>p {
-    border: solid thick black;
-    text-align: center;
+p.comments_header{
+    font-size: larger;
+    font-weight: 500;
+    margin-left: 50px;
 }
